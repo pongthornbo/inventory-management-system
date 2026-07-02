@@ -1,0 +1,33 @@
+from fastapi import APIRouter, status
+from app.schemas.product import ProductCreate, ProductUpdate, ProductResponse 
+from app.services import product_service
+
+router = APIRouter(
+    prefix="/products",
+    tags=["Products"]
+)
+
+@router.get("", response_model=list[ProductResponse])
+def get_products():
+    return product_service.get_all_products()
+
+@router.get("/{product_id}", response_model=ProductResponse)
+def get_product(product_id: int):
+    return product_service.get_product_by_id(product_id)
+
+@router.post(
+        "", 
+        response_model=ProductResponse, 
+        status_code=status.HTTP_201_CREATED
+    )
+def create_product(product: ProductCreate):
+    return product_service.create_product(product)
+
+@router.put("/{product_id}", response_model=ProductResponse)
+def update_product(product_id: int, product_update: ProductUpdate):
+    return product_service.update_product(product_id, product_update)
+
+@router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_product(product_id: int):
+    product_service.delete_product(product_id)
+    return None
