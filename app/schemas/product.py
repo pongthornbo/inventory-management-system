@@ -1,18 +1,32 @@
-from pydantic import  BaseModel
+from decimal import Decimal
+from pydantic import BaseModel
+
+
+class ProductCreate(BaseModel):
+    name: str
+    description: str | None = None
+    sku: str | None = None
+    price: Decimal
+    stock: int = 0
+    category_id: int | None = None
+
+
+class ProductUpdate(BaseModel):
+    name: str
+    description: str | None = None
+    sku: str | None = None
+    price: Decimal
+    stock: int
+    category_id: int | None = None
+    is_active: bool = True
+
 
 class ProductResponse(BaseModel):
     id: int
     name: str
-    price: int
+    description: str | None 
+    sku: str | None 
+    price: Decimal
     stock: int
-
-class ProductCreate(BaseModel):
-    name: str
-    price: int
-    stock: int
-
-class ProductUpdate(BaseModel):
-    id: int
-    name: str
-    price: int 
-    stock: int
+    category_id: int | None 
+    is_active: bool
