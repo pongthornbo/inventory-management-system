@@ -1,5 +1,8 @@
 from fastapi import HTTPException, status
+from sqlalchemy.orm import Session
+
 from app.schemas.product import ProductCreate, ProductUpdate
+from app.models.product import Product
 
 products = [
     {"id": 1, "name": "Keyboard", "price": 990, "stock": 10},
@@ -8,17 +11,19 @@ products = [
     {"id": 4, "name": "USB-C Cable", "price": 250, "stock": 20}
 ]
 
-def get_all_products():
-    return products
+def get_all_products(db: Session):
+    return db.query(Product).all()
 
-def get_product_by_id(product_id: int):
-    for product in products:
-        if product["id"] == product_id:
-            return product
-    raise HTTPException(
-        status_code=404, 
-        detail="Product not found"
-    )
+def get_product_by_id(db: Session, product_id: int):
+    product = db.query(Product).filter(Product.id == product_id).first()
+
+    if product is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Product not found"
+        )
+    
+    return product
 
 def create_product(product: ProductCreate):
     if product.price < 0:

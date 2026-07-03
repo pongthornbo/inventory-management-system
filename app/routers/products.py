@@ -1,4 +1,7 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends ,status
+from sqlalchemy.orm import Session
+
+from app.database import get_db
 from app.schemas.product import ProductCreate, ProductUpdate, ProductResponse 
 from app.services import product_service
 
@@ -8,12 +11,12 @@ router = APIRouter(
 )
 
 @router.get("", response_model=list[ProductResponse])
-def get_products():
-    return product_service.get_all_products()
+def get_products(db: Session = Depends(get_db)):
+    return product_service.get_all_products(db)
 
 @router.get("/{product_id}", response_model=ProductResponse)
-def get_product(product_id: int):
-    return product_service.get_product_by_id(product_id)
+def get_product(product_id: int, db: Session = Depends(get_db)):
+    return product_service.get_product_by_id(db, product_id)
 
 @router.post(
         "", 
