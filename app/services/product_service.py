@@ -4,12 +4,12 @@ from sqlalchemy.orm import Session
 from app.schemas.product import ProductCreate, ProductUpdate
 from app.models.product import Product
 
-products = [
-    {"id": 1, "name": "Keyboard", "price": 990, "stock": 10},
-    {"id": 2, "name": "Mouse", "price": 490, "stock": 0},
-    {"id": 3, "name": "HDMI Cable", "price": 180, "stock": 15},
-    {"id": 4, "name": "USB-C Cable", "price": 250, "stock": 20}
-]
+# products = [
+#     {"id": 1, "name": "Keyboard", "price": 990, "stock": 10},
+#     {"id": 2, "name": "Mouse", "price": 490, "stock": 0},
+#     {"id": 3, "name": "HDMI Cable", "price": 180, "stock": 15},
+#     {"id": 4, "name": "USB-C Cable", "price": 250, "stock": 20}
+# ]
 
 def get_all_products(db: Session):
     return db.query(Product).all()
@@ -25,27 +25,32 @@ def get_product_by_id(db: Session, product_id: int):
     
     return product
 
-def create_product(product: ProductCreate):
-    if product.price < 0:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Price must be a positive value"
-        )
+def create_product(db: Session, product: ProductCreate):
+    # if product.price < 0:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_400_BAD_REQUEST,
+    #         detail="Price must be a positive value"
+    #     )
     
-    if product.stock < 0:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Stock must be a positive value"
-        )
+    # if product.stock < 0:
+    #     raise HTTPException(
+    #         status_code=status.HTTP_400_BAD_REQUEST,
+    #         detail="Stock must be a positive value"
+    #     )
     
-    new_product = {
-        "id": len(products) + 1,
-        "name": product.name,
-        "price": product.price,
-        "stock": product.stock
-    }
-    products.append(new_product)
-    
+    new_product = Product(
+        name=product.name,
+        description=product.description,
+        sku=product.sku,
+        price=product.price,
+        stock=product.stock,
+        category_id=product.category_id
+    )
+   
+    db.add(new_product)
+    db.commit()
+    db.refresh(new_product)
+
     return new_product
 
 def update_product(product_id: int, product_update: ProductUpdate):

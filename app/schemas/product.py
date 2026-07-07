@@ -29,6 +29,6 @@ class ProductResponse(BaseModel):
     price: Decimal
     stock: int
     category_id: int | None 
-    is_active: bool | None
+    is_active: bool
 
     model_config = ConfigDict(from_attributes=True)
