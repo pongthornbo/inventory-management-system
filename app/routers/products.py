@@ -23,12 +23,12 @@ def get_product(product_id: int, db: Session = Depends(get_db)):
         response_model=ProductResponse, 
         status_code=status.HTTP_201_CREATED
     )
-def create_product(db: Session = Depends(get_db), product: ProductCreate = None):
+def create_product(product: ProductCreate, db: Session = Depends(get_db) ):
     return product_service.create_product(db, product)
 
 @router.put("/{product_id}", response_model=ProductResponse)
-def update_product(product_id: int, product_update: ProductUpdate):
-    return product_service.update_product(product_id, product_update)
+def update_product(product_id: int, product_update: ProductUpdate, db: Session = Depends(get_db)):
+    return product_service.update_product(db, product_id, product_update)
 
 @router.delete("/{product_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_product(product_id: int):
