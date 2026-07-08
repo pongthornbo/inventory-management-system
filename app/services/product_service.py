@@ -71,6 +71,18 @@ def create_product(db: Session, product: ProductCreate):
 def update_product(db:Session, product_id: int, product_update: ProductUpdate):
     product = get_product_by_id(db, product_id)
 
+    if product_update.price < 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Price must be a positive value"
+        )
+    
+    if product_update.stock < 0:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Stock must be a positive value"
+        )
+
     product.name = product_update.name
     product.description = product_update.description
     product.sku = product_update.sku
