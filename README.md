@@ -11,7 +11,8 @@ This project is part of my backend development learning portfolio. The goal is t
 - PostgreSQL
 - SQLAlchemy
 - Pydantic
-- Docker PostgreSQL
+- Docker
+- Docker Compose
 - Uvicorn
 
 ## Current Features
@@ -50,20 +51,26 @@ This project is part of my backend development learning portfolio. The goal is t
 ## Project Structure
 
 ```text
-app/
-├── main.py
-├── database.py
-├── models/
-│   └── product.py
-├── routers/
-│   └── products.py
-├── schemas/
-│   └── product.py
-└── services/
-    └── product_service.py
+.
+├── app/
+│   ├── main.py
+│   ├── database.py
+│   ├── models/
+│   │   └── product.py
+│   ├── routers/
+│   │   └── products.py
+│   ├── schemas/
+│   │   └── product.py
+│   └── services/
+│       └── product_service.py
+├── Dockerfile
+├── docker-compose.yml
+├── .env.example
+├── requirements.txt
+└── README.md
 ```
 
-## How to Run
+## How to Run with Docker
 
 ### 1. Clone the repository
 
@@ -72,51 +79,45 @@ git clone https://github.com/pongthornbo/inventory-management-api.git
 cd inventory-management-api
 ```
 
-### 2. Create and activate virtual environment
+### 2. Create environment file
 
 ```bash
-python3 -m venv .venv
-source .venv/bin/activate
+cp .env.example .env
 ```
 
-### 3. Install dependencies
+### 3. Start the application
 
 ```bash
-pip install -r requirements.txt
+docker compose up --build
 ```
 
-### 4. Start PostgreSQL and pgAdmin with Docker
-
-```bash
-docker compose up -d
-```
-
-This will start:
-
-* PostgreSQL on port 5432
-* pgAdmin on port 5050
-
-### 5. Run the FastAPI server
-
-```bash
-uvicorn app.main:app --reload
-```
-
-### 6. Open API documentation
-
+The API will be available at:
 ```text
-http://127.0.0.1:8000/docs
+http://localhost:8000
 ```
-
-## Database Configuration
-
-The project currently uses PostgreSQL with the following local database URL:
-
+API documentation:
 ```text
-postgresql://postgres:postgres@localhost:5432/inventory_db
+http://localhost:8000/docs
+```
+pgAdmin:
+```text
+http://localhost:5050
+```
+Default pgAdmin login:
+```text
+Email: admin@example.com
+Password: admin
 ```
 
-The PostgreSQL database is started using Docker Compose.
+### 4. Stop the application
+```bash
+docker compose down
+```
+To remove database volume as well:
+```bash
+docker compose down -v
+```
+> Warning: `docker compose down -v` will remove PostgreSQL data.
 
 ## Notes
 
