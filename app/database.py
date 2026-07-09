@@ -1,7 +1,12 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker, declarative_base
 
-DATABASE_URL = "postgresql://postgres:postgres@postgres:5432/inventory_db"
+import os
+
+DATABASE_URL = os.getenv("DATABASE_URL")
+
+if DATABASE_URL is None:
+    raise RuntimeError("DATABASE_URL environment variable is not set")
 
 engine = create_engine(DATABASE_URL)
 
