@@ -14,6 +14,7 @@ This project is part of my backend development learning portfolio. The goal is t
 - Docker
 - Docker Compose
 - Uvicorn
+- Alembic
 
 ## Current Features
 
@@ -52,6 +53,10 @@ This project is part of my backend development learning portfolio. The goal is t
 
 ```text
 .
+├── alembic/
+│   ├── versions/
+│   ├── env.py
+│   └── script.py.mako    
 ├── app/
 │   ├── main.py
 │   ├── database.py
@@ -67,6 +72,7 @@ This project is part of my backend development learning portfolio. The goal is t
 ├── docker-compose.yml
 ├── .env.example
 ├── requirements.txt
+├── alembic.ini
 └── README.md
 ```
 
@@ -89,6 +95,7 @@ cp .env.example .env
 
 ```bash
 docker compose up --build
+docker compose exec api alembic upgrade head
 ```
 
 The API will be available at:
@@ -110,6 +117,7 @@ Password: admin
 ```
 
 ### 4. Stop the application
+
 ```bash
 docker compose down
 ```
@@ -118,6 +126,25 @@ To remove database volume as well:
 docker compose down -v
 ```
 > Warning: `docker compose down -v` will remove PostgreSQL data.
+
+## Database Migrations
+
+Create a new migration after changing SQLAlchemy models:
+```bash
+docker compose exec api alembic revision --autogenerate -m "migration message"
+```
+Apply all migrations:
+```bash
+docker compose exec api alembic upgrade head
+```
+Check the current migration:
+```bash
+docker compose exec api alembic current
+```
+View migration history:
+```bash
+docker compose exec api alembic history
+```
 
 ## Notes
 
