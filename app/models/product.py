@@ -10,6 +10,7 @@ class Product(Base):
     name = Column(String(255), nullable=False)
     description = Column(Text, nullable=True)
     sku = Column(String(100), unique=True, nullable=True)
+    barcode = Column(String(100), unique=True, nullable=True)
     price = Column(Numeric(10, 2), nullable=False)
     stock = Column(
         Integer, 
