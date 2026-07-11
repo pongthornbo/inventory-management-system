@@ -31,7 +31,10 @@ services:
       - .env
     depends_on:
       - postgres
+    volumes:
+      - pgadmin_data:/var/lib/pgadmin
     restart: unless-stopped
 
 volumes:
   postgres_data:
+  pgadmin_data:
