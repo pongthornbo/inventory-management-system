@@ -8,9 +8,9 @@ class CategoryCreate(BaseModel):
     description: str | None = None
     
 class CategoryUpdate(BaseModel):
-    name: str = Field(default=None, min_length=1, max_length=255)
+    name: str | None = Field(default=None, min_length=1, max_length=255)
     description: str | None = None
-    is_active: bool | None = None
+    is_active: bool = True
 
 class CategoryResponse(BaseModel):
     id: int

@@ -12,11 +12,11 @@ class ProductCreate(BaseModel):
 
 
 class ProductUpdate(BaseModel):
-    name: str
+    name: str | None = None
     description: str | None = None
     sku: str | None = None
-    price: Decimal
-    stock: int
+    price: Decimal | None = None
+    stock: int | None = None
     category_id: int | None = None
     is_active: bool = True
 

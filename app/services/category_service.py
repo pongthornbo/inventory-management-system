@@ -47,7 +47,7 @@ def create_catogory(category: CategoryCreate, db: Session):
     return new_category
 
 def update_category(category_id: int, category_update: CategoryUpdate, db: Session):
-    category = get_category_by_id(category_id ,db)
+    category = db.query(Category).filter(Category.id == category_id).first()
 
     update_data = category_update.model_dump(exclude_unset=True,)
     if not update_data:
@@ -55,6 +55,14 @@ def update_category(category_id: int, category_update: CategoryUpdate, db: Sessi
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="No update data provided",
         )
+    
+    required_fields = ["name", "is_active",]
+    for field in required_fields:
+        if (field in update_data and update_data[field] is None):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"{field.capitalize()} cannot be null",
+            )
     
     if "name" in update_data:
         if update_data["name"] is None:
@@ -85,7 +93,7 @@ def update_category(category_id: int, category_update: CategoryUpdate, db: Sessi
 
     return category
 
-def delete_categery(category_id: int, db: Session):
+def delete_category(category_id: int, db: Session):
     category = get_category_by_id(category_id, db)
 
     category.is_active = False

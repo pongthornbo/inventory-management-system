@@ -1,6 +1,5 @@
-from fastapi import APIRouter, Depends, status, Response
+from fastapi import APIRouter, Depends, status
 from sqlalchemy.orm import Session
-from decimal import Decimal
 
 from app.database import get_db
 from app.schemas.category import CategoryCreate, CategoryUpdate, CategoryResponse 
@@ -16,7 +15,7 @@ def get_categories(db: Session=Depends(get_db)):
     return category_service.get_all_categories(db)
 
 @router.get("/{category_id}", response_model=CategoryResponse)
-def get_category(category_id, db: Session=Depends(get_db)):
+def get_category(category_id: int, db: Session=Depends(get_db)):
     return category_service.get_category_by_id(category_id, db)
 
 @router.post("", response_model=CategoryResponse, status_code=status.HTTP_201_CREATED)
@@ -29,7 +28,7 @@ def update_category(category_id: int, category_update: CategoryUpdate, db: Sessi
 
 @router.delete("/{category_id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_category(category_id: int, db: Session=Depends(get_db)):
-    category_service.delete_categery(category_id, db)
+    category_service.delete_category(category_id, db)
     return None
 
 
