@@ -71,6 +71,21 @@ def create_product(db: Session, product: ProductCreate):
 def update_product(db:Session, product_id: int, product_update: ProductUpdate):
     product = get_product_by_id(db, product_id)
 
+    update_data = product_update.model_dump(exclude_unset=True)
+    if not update_data:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="No update data provided",
+        )
+    
+    required_fields = ["name", "price", "stock"]
+    for field in required_fields:
+        if (field in update_data and update_data[field] is None):
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=f"{field.capitalize()} cannot be null",
+            )
+
     if product_update.price < 0:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -83,12 +98,8 @@ def update_product(db:Session, product_id: int, product_update: ProductUpdate):
             detail="Stock must be a positive value"
         )
 
-    product.name = product_update.name
-    product.description = product_update.description
-    product.sku = product_update.sku
-    product.price = product_update.price
-    product.stock = product_update.stock
-    product.category_id = product_update.category_id
+    for field, value in update_data.items():
+        setattr(product, field, value)
 
     db.commit()
     db.refresh(product)
