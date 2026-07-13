@@ -22,7 +22,7 @@ def get_category_by_id(category_id: int, db: Session):
 
     return category
 
-def create_catogory(category: CategoryCreate, db: Session): 
+def create_category(category: CategoryCreate, db: Session): 
     existing_category = (
         db.query(Category)
         .filter(Category.name == category.name)
@@ -48,6 +48,11 @@ def create_catogory(category: CategoryCreate, db: Session):
 
 def update_category(category_id: int, category_update: CategoryUpdate, db: Session):
     category = db.query(Category).filter(Category.id == category_id).first()
+    if category is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Category not found"
+        )
 
     update_data = category_update.model_dump(exclude_unset=True,)
     if not update_data:
@@ -56,19 +61,12 @@ def update_category(category_id: int, category_update: CategoryUpdate, db: Sessi
             detail="No update data provided",
         )
     
-    required_fields = ["name", "is_active",]
+    required_fields = ["name",]
     for field in required_fields:
         if (field in update_data and update_data[field] is None):
             raise HTTPException(
                 status_code=status.HTTP_400_BAD_REQUEST,
                 detail=f"{field.capitalize()} cannot be null",
-            )
-    
-    if "name" in update_data:
-        if update_data["name"] is None:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Category name cannot be null",
             )
         
         duplicate_category = (

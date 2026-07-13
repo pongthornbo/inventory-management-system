@@ -70,6 +70,11 @@ def create_product(db: Session, product: ProductCreate):
 
 def update_product(db:Session, product_id: int, product_update: ProductUpdate):
     product = db.query(Product).filter(Product.id == product_id).first()
+    if product is None:
+        raise HTTPException(
+            status_code=404,
+            detail="Product not found"
+        )
 
     update_data = product_update.model_dump(exclude_unset=True)
     if not update_data:
@@ -78,7 +83,7 @@ def update_product(db:Session, product_id: int, product_update: ProductUpdate):
             detail="No update data provided",
         )
     
-    required_fields = ["name", "price", "stock", "is_active"]
+    required_fields = ["name", "price", "stock",]
     for field in required_fields:
         if (field in update_data and update_data[field] is None):
             raise HTTPException(
