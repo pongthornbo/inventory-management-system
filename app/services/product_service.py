@@ -5,6 +5,7 @@ from decimal import Decimal
 
 from app.schemas.product import ProductCreate, ProductUpdate
 from app.models.product import Product
+from app.services import category_service
 
 def get_all_products(
     db: Session,
@@ -52,6 +53,9 @@ def create_product(db: Session, product: ProductCreate):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Stock must be a positive value"
         )
+    
+    if product.category_id is not None:
+        category_service.get_category_by_id(product.category_id, db)
     
     new_product = Product(
         name=product.name,
@@ -102,7 +106,10 @@ def update_product(db:Session, product_id: int, product_update: ProductUpdate):
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Stock must be a positive value"
         )
-
+    
+    if "category_id" in update_data and update_data["category_id"] is not None:
+        category_service.get_category_by_id(update_data["category_id"], db)
+        
     for field, value in update_data.items():
         setattr(product, field, value)
 

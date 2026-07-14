@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, DateTime, Integer, Numeric, String, Text
+from sqlalchemy import Boolean, Column, DateTime, Integer, Numeric, String, Text, ForeignKey
 from sqlalchemy.sql import func
 
 from app.database import Base
@@ -18,7 +18,14 @@ class Product(Base):
         default=0,
         server_default="0"
     )
-    category_id = Column(Integer, nullable=True)
+    category_id = Column(
+        Integer,
+        ForeignKey(
+            "categories.id",
+            name="fk_products_category_id_categories"
+        ), 
+        nullable=True
+    )
     is_active = Column(
         Boolean, 
         nullable=False, 
