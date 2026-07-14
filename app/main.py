@@ -8,12 +8,12 @@ from app.routers import products, categories
 
 app = FastAPI()
 
-allowed_origins = "http://localhost:5173"
+allowed_origins = ["http://localhost:5173"]
 
 app.add_middleware(
     CORSMiddleware, 
     allow_origins=allowed_origins, 
-    allow_credentials=True, 
+    allow_credentials=False, 
     allow_methods=["*"],
     allow_headers=["*"],
 )
