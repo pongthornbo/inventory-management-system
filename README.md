@@ -1,10 +1,12 @@
 # Inventory Management API
 
-A backend API project for managing inventory products, built with FastAPI, PostgreSQL, and SQLAlchemy.
+A full-stack inventory management project for managing products, categories, and stock.
 
-This project is part of my backend development learning portfolio. The goal is to understand how a real backend system is structured, including API design, database integration, CRUD operations, and clean project organization.
+The backend is built with FastAPI, PostgreSQL, SQLAlchemy, Alembic, and Docker. A React frontend will be added as the next development milestone.
 
-## Tech Stack
+This project is part of my software development learning portfolio. The goal is to understand how a real full-stack system is structured, including API design, database integration, frontend-backend communication, CRUD operations, and project organization.
+
+## Current Tech Stack
 
 - Python
 - FastAPI
@@ -53,26 +55,25 @@ This project is part of my backend development learning portfolio. The goal is t
 
 ```text
 .
-├── alembic/
-│   ├── versions/
-│   ├── env.py
-│   └── script.py.mako    
-├── app/
-│   ├── main.py
-│   ├── database.py
-│   ├── models/
-│   │   └── product.py
-│   ├── routers/
-│   │   └── products.py
-│   ├── schemas/
-│   │   └── product.py
-│   └── services/
-│       └── product_service.py
-├── Dockerfile
+├── backend/
+│   ├── alembic/
+│   │   ├── versions/
+│   │   ├── env.py
+│   │   └── script.py.mako
+│   ├── app/
+│   │   ├── main.py
+│   │   ├── database.py
+│   │   ├── models/
+│   │   ├── routers/
+│   │   ├── schemas/
+│   │   └── services/
+│   ├── Dockerfile
+│   ├── .dockerignore
+│   ├── requirements.txt
+│   └── alembic.ini
 ├── docker-compose.yml
 ├── .env.example
-├── requirements.txt
-├── alembic.ini
+├── .gitignore
 └── README.md
 ```
 
