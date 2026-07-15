@@ -82,8 +82,8 @@ This project is part of my software development learning portfolio. The goal is 
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/pongthornbo/inventory-management-api.git
-cd inventory-management-api
+git clone https://github.com/pongthornbo/inventory-management-system.git
+cd inventory-management-system
 ```
 
 ### 2. Create environment file
