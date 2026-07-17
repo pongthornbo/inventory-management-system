@@ -1,3 +1,5 @@
+import ProductItem from './components/ProductItem.jsx'
+
 const products = [
   {
     id: 1,
@@ -25,14 +27,13 @@ function App() {
       <h1>Inventory Management System</h1>
       <p>Manage products and stock.</p>
 
-      <h2>product</h2>
+      <h2>Products</h2>
 
       <ul>
-        {products.map((product) =>
-          <li key={product.id}>
-            {product.name} — ฿{product.price} — Stock: {product.stock}
-          </li>
-        )}
+        {products.map((product) => (
+            <ProductItem key={product.id} product={product} />
+        ))}
+
       </ul>
     </main>
   )
