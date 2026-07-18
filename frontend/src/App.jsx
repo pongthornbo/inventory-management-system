@@ -74,6 +74,22 @@ function App() {
     }
   }
 
+  async function handleDeleteProduct(productId) {
+    try {
+      const response = await fetch(`http://localhost:8000/products/${productId}`, {
+          method: 'DELETE',
+        })
+
+      if (!response.ok) {
+        throw new Error('Failed to delete product')
+      }
+
+      setProducts((currentProducts) => currentProducts.filter((product) => product.id !== productId),)
+    } catch(error) {
+      console.error(error)
+    }
+  }
+
   return (
     <main>
       <h1>Inventory Management System</h1>
@@ -87,9 +103,7 @@ function App() {
         placeholder="Search products"
       />
 
-      <button type="button" onClick={handleClearProduct}>
-        Clear products
-      </button>
+      <button type="button" onClick={handleClearProduct}>Clear products</button>
 
       {isLoading ? (
         <p>Loading products...</p>
@@ -98,7 +112,7 @@ function App() {
       ) : filterProducts.length > 0 ? (
           <ul>
             {filterProducts.map((product) => (
-                <ProductItem key={product.id} product={product} />
+                <ProductItem key={product.id} product={product} onDelete={handleDeleteProduct}/>
             ))}
           </ul>
         ) : (
