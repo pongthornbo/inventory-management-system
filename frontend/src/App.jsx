@@ -5,6 +5,7 @@ function App() {
   const [products, setProducts] = useState([])
   const [searchText, setSearchText] = useState('')
   const [isLoading, setIsLoading] = useState(true)
+  const [refreshCount, setRefreshCount] = useState(0)
   const [errorMessage, setErrorMessage] = useState('')
 
   const [newProductName, setNewProductName] = useState('')
@@ -14,6 +15,8 @@ function App() {
 
   useEffect(() => {
     async function loadProducts(){
+      setIsLoading(true)
+      setErrorMessage('')
       try{
         const response = await fetch('http://localhost:8000/products')
 
@@ -32,7 +35,7 @@ function App() {
     }
 
     loadProducts();
-  }, [])
+  }, [refreshCount])
 
   function handleClearProduct() {
     setProducts([])
@@ -159,6 +162,7 @@ function App() {
         placeholder="Search products"
       />
 
+      <button type="button" onClick={() => {setRefreshCount((currentCount) => currentCount+1)}}>Refresh</button>
       <button type="button" onClick={handleClearProduct}>Clear products</button>
 
       {isLoading ? (
