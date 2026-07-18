@@ -40,12 +40,16 @@ function App() {
         Clear products
       </button>
 
-      <ul>
-        {products.map((product) => (
-            <ProductItem key={product.id} product={product} />
-        ))}
+      { products.length > 0 ? (
+        <ul>
+          {products.map((product) => (
+              <ProductItem key={product.id} product={product} />
+          ))}
 
-      </ul>
+        </ul>
+      ) : (
+      <p>No products found.</p>
+      )}
     </main>
   )
 }
