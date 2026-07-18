@@ -24,10 +24,13 @@ const initialProducts = [
 
 function App() {
   const [products, setProducts] = useState(initialProducts)
+  const [searchText, setSearchText] = useState('')
 
   function handleClearProduct() {
     setProducts([])
   }
+
+  const filterProducts = products.filter((product) => product.name.toLowerCase().includes(searchText.toLowerCase()) )
 
   return (
     <main>
@@ -36,16 +39,24 @@ function App() {
 
       <h2>Products</h2>
 
+      <input
+        type="text"
+        value={searchText}
+        onChange={(event) => {
+          setSearchText(event.target.value)
+        }}
+        placeholder="Search products"
+      />
+
       <button type="button" onClick={handleClearProduct}>
         Clear products
       </button>
 
-      { products.length > 0 ? (
+      { filterProducts.length > 0 ? (
         <ul>
-          {products.map((product) => (
+          {filterProducts.map((product) => (
               <ProductItem key={product.id} product={product} />
           ))}
-
         </ul>
       ) : (
       <p>No products found.</p>
