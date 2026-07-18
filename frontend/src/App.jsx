@@ -10,7 +10,7 @@ function App() {
   useEffect(() => {
     async function loadProducts(){
       try{
-        const response = await fetch('http://localhost:8000/product')
+        const response = await fetch('http://localhost:8000/products')
 
         if (!response.ok) {
           throw new Error('Failed to load products')
