@@ -10,7 +10,7 @@ function App() {
   const [newProductName, setNewProductName] = useState('')
   const [newProductPrice, setNewProductPrice] = useState('')
   const [newProductStock, setNewProductStock] = useState('0')
-  const [createErrorMessage, setCreateErrorMessage] = useState('')
+  const [actionErrorMessage, setActionErrorMessage] = useState('')
 
   useEffect(() => {
     async function loadProducts(){
@@ -42,7 +42,7 @@ function App() {
 
   async function handleCreateProduct(event) {
     event.preventDefault()
-    setCreateErrorMessage('')
+    setCActionErrorMessage('')
 
     const productData = {
       name: newProductName,
@@ -52,10 +52,11 @@ function App() {
 
     try { 
       const response = await fetch('http://localhost:8000/products', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json',},
-        body: JSON.stringify(productData),
-      })
+          method: 'POST',
+          headers: {'Content-Type': 'application/json',},
+          body: JSON.stringify(productData),
+        }
+      )
 
       if (!response.ok) {
         throw new Error('Failed to create product')
@@ -70,15 +71,13 @@ function App() {
       setNewProductStock('0')
     } catch(error) {
       console.error(error)
-      setCreateErrorMessage('Failed to create product')
+      setActionErrorMessage('Failed to create product')
     }
   }
 
   async function handleDeleteProduct(productId) {
     try {
-      const response = await fetch(`http://localhost:8000/products/${productId}`, {
-          method: 'DELETE',
-        })
+      const response = await fetch(`http://localhost:8000/products/${productId}`, {method: 'DELETE',})
 
       if (!response.ok) {
         throw new Error('Failed to delete product')
@@ -89,6 +88,30 @@ function App() {
       console.error(error)
     }
   }
+
+  async function handleUpdateStock(productId, newStock) {
+  setActionErrorMessage('')
+
+  try {
+    const response = await fetch(`http://localhost:8000/products/${productId}`, {
+        method: 'PATCH',
+        headers: {'Content-Type': 'application/json',},
+        body: JSON.stringify({stock: newStock,}),
+      }
+    )
+
+    if (!response.ok) {
+      throw new Error('Failed to update stock')
+    }
+
+    const updatedProduct = await response.json()
+
+    setProducts((currentProducts) => currentProducts.map((product) => product.id === productId ? updatedProduct: product))
+  } catch (error) {
+    console.error(error)
+    setActionErrorMessage('Failed to update stock')
+  }
+}
 
   return (
     <main>
@@ -112,12 +135,14 @@ function App() {
       ) : filterProducts.length > 0 ? (
           <ul>
             {filterProducts.map((product) => (
-                <ProductItem key={product.id} product={product} onDelete={handleDeleteProduct}/>
+                <ProductItem key={product.id} product={product} onUpdateStock={handleUpdateStock} onDelete={handleDeleteProduct}/>
             ))}
           </ul>
         ) : (
           <p>No products found.</p>
       )}
+
+      {actionErrorMessage && (<p>{actionErrorMessage}</p>)}
 
       <h2>Add product</h2>
       <form onSubmit={handleCreateProduct}>
@@ -157,7 +182,6 @@ function App() {
       <button type="submit">Add product</button>
     </form>
 
-    {createErrorMessage && (<p>{createErrorMessage}</p>)}
     </main>
   )
 }
