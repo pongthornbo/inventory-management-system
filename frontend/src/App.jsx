@@ -1,15 +1,19 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import ProductItem from './components/ProductItem.jsx'
 
 function App() {
   const [products, setProducts] = useState([])
   const [searchText, setSearchText] = useState('')
 
-  async function handleLoadProducts(){
-    const response = await fetch('http://localhost:8000/products')
-    const data = await response.json()
-    setProducts(data)
-  }
+  useEffect(() => {
+    async function loadProducts(){
+      const response = await fetch('http://localhost:8000/products')
+      const data = await response.json()
+      setProducts(data)
+    }
+
+    loadProducts();
+  }, [])
 
   function handleClearProduct() {
     setProducts([])
@@ -32,10 +36,6 @@ function App() {
         }}
         placeholder="Search products"
       />
-
-      <button type="button" onClick={handleLoadProducts}>
-        Load products
-      </button>
 
       <button type="button" onClick={handleClearProduct}>
         Clear products
