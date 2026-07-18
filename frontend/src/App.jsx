@@ -1,6 +1,7 @@
+import { useState } from 'react'
 import ProductItem from './components/ProductItem.jsx'
 
-const products = [
+const initialProducts = [
   {
     id: 1,
     name: 'Mechanical Keyboard',
@@ -22,12 +23,22 @@ const products = [
 ]
 
 function App() {
+  const [products, setProducts] = useState(initialProducts)
+
+  function handleClearProduct() {
+    setProducts([])
+  }
+
   return (
     <main>
       <h1>Inventory Management System</h1>
       <p>Manage products and stock.</p>
 
       <h2>Products</h2>
+
+      <button type="button" onClick={handleClearProduct}>
+        Clear products
+      </button>
 
       <ul>
         {products.map((product) => (
