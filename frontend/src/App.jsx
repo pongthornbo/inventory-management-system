@@ -5,14 +5,25 @@ function App() {
   const [products, setProducts] = useState([])
   const [searchText, setSearchText] = useState('')
   const [isLoading, setIsLoading] = useState(true)
+  const [errorMessage, setErrorMessage] = useState('')
 
   useEffect(() => {
     async function loadProducts(){
-      const response = await fetch('http://localhost:8000/products')
-      const data = await response.json()
+      try{
+        const response = await fetch('http://localhost:8000/product')
 
-      setProducts(data)
-      setIsLoading(false)
+        if (!response.ok) {
+          throw new Error('Failed to load products')
+        }
+
+        const data = await response.json()
+
+        setProducts(data)
+      } catch(error) {
+        setErrorMessage(error.message)
+      } finally {
+        setIsLoading(false)
+      }
     }
 
     loadProducts();
@@ -22,7 +33,7 @@ function App() {
     setProducts([])
   }
 
-  const filterProducts = products.filter((product) => product.name.toLowerCase().includes(searchText.toLowerCase()) )
+  const filterProducts = products.filter((product) => product.name.toLowerCase().includes(searchText.toLowerCase()))
 
   return (
     <main>
@@ -46,14 +57,16 @@ function App() {
 
       { isLoading ? (
         <p>Loading products...</p>
+      ) : errorMessage ? (
+        <p>{errorMessage}</p>
       ) : filterProducts.length > 0 ? (
-        <ul>
-          {filterProducts.map((product) => (
-              <ProductItem key={product.id} product={product} />
-          ))}
-        </ul>
-      ) : (
-        <p>No products found.</p>
+          <ul>
+            {filterProducts.map((product) => (
+                <ProductItem key={product.id} product={product} />
+            ))}
+          </ul>
+        ) : (
+          <p>No products found.</p>
       )}
     </main>
   )
