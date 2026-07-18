@@ -4,12 +4,15 @@ import ProductItem from './components/ProductItem.jsx'
 function App() {
   const [products, setProducts] = useState([])
   const [searchText, setSearchText] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     async function loadProducts(){
       const response = await fetch('http://localhost:8000/products')
       const data = await response.json()
+
       setProducts(data)
+      setIsLoading(false)
     }
 
     loadProducts();
@@ -41,14 +44,16 @@ function App() {
         Clear products
       </button>
 
-      { filterProducts.length > 0 ? (
+      { isLoading ? (
+        <p>Loading products...</p>
+      ) : filterProducts.length > 0 ? (
         <ul>
           {filterProducts.map((product) => (
               <ProductItem key={product.id} product={product} />
           ))}
         </ul>
       ) : (
-      <p>No products found.</p>
+        <p>No products found.</p>
       )}
     </main>
   )
