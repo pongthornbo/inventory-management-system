@@ -1,30 +1,15 @@
 import { useState } from 'react'
 import ProductItem from './components/ProductItem.jsx'
 
-const initialProducts = [
-  {
-    id: 1,
-    name: 'Mechanical Keyboard',
-    price: 2500,
-    stock: 10,
-  },
-  {
-    id: 2,
-    name: 'Wireless Mouse',
-    price: 890,
-    stock: 4,
-  },
-  {
-    id: 3,
-    name: 'USB-C Cable',
-    price: 350,
-    stock: 20,
-  },
-]
-
 function App() {
-  const [products, setProducts] = useState(initialProducts)
+  const [products, setProducts] = useState([])
   const [searchText, setSearchText] = useState('')
+
+  async function handleLoadProducts(){
+    const response = await fetch('http://localhost:8000/products')
+    const data = await response.json()
+    setProducts(data)
+  }
 
   function handleClearProduct() {
     setProducts([])
@@ -47,6 +32,10 @@ function App() {
         }}
         placeholder="Search products"
       />
+
+      <button type="button" onClick={handleLoadProducts}>
+        Load products
+      </button>
 
       <button type="button" onClick={handleClearProduct}>
         Clear products
