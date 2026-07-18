@@ -42,7 +42,7 @@ function App() {
 
   async function handleCreateProduct(event) {
     event.preventDefault()
-    setCActionErrorMessage('')
+    setActionErrorMessage('')
 
     const productData = {
       name: newProductName,
@@ -76,6 +76,8 @@ function App() {
   }
 
   async function handleDeleteProduct(productId) {
+    setActionErrorMessage('')
+
     try {
       const response = await fetch(`http://localhost:8000/products/${productId}`, {method: 'DELETE',})
 
@@ -86,32 +88,33 @@ function App() {
       setProducts((currentProducts) => currentProducts.filter((product) => product.id !== productId),)
     } catch(error) {
       console.error(error)
+      setActionErrorMessage('Failed to delete product')
     }
   }
 
   async function handleUpdateStock(productId, newStock) {
-  setActionErrorMessage('')
+    setActionErrorMessage('')
 
-  try {
-    const response = await fetch(`http://localhost:8000/products/${productId}`, {
-        method: 'PATCH',
-        headers: {'Content-Type': 'application/json',},
-        body: JSON.stringify({stock: newStock,}),
+    try {
+      const response = await fetch(`http://localhost:8000/products/${productId}`, {
+          method: 'PATCH',
+          headers: {'Content-Type': 'application/json',},
+          body: JSON.stringify({stock: newStock,}),
+        }
+      )
+
+      if (!response.ok) {
+        throw new Error('Failed to update stock')
       }
-    )
 
-    if (!response.ok) {
-      throw new Error('Failed to update stock')
+      const updatedProduct = await response.json()
+
+      setProducts((currentProducts) => currentProducts.map((product) => product.id === productId ? updatedProduct: product))
+    } catch (error) {
+      console.error(error)
+      setActionErrorMessage('Failed to update stock')
     }
-
-    const updatedProduct = await response.json()
-
-    setProducts((currentProducts) => currentProducts.map((product) => product.id === productId ? updatedProduct: product))
-  } catch (error) {
-    console.error(error)
-    setActionErrorMessage('Failed to update stock')
   }
-}
 
   return (
     <main>
