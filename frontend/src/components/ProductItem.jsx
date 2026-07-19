@@ -99,10 +99,13 @@ function ProductItem ({ product, categories, onUpdateStock, onUpdateProduct, onD
         )
     }
 
+    const categoryName = product.category_id === null ?
+        'No category':
+        categories.find((category) => category.id === product.category_id,)?.name ?? 'Category unavailable'
+
     return (
         <li>
-            {product.name} — ฿{product.price} — Stock: {product.stock} 
-            - Category: {categories.find(category => category.id === product.category_id)?.name ?? "No category"}
+            {product.name} — ฿{product.price} — Stock: {product.stock} - Category: {categoryName}
 
             <button
                 type="button"

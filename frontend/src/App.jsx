@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react'
 import ProductItem from './components/ProductItem.jsx'
+import CategoryItem from './components/CategoryItem.jsx'
 
 function App() {
   const [products, setProducts] = useState([])
@@ -220,6 +221,58 @@ function App() {
     }
   }
 
+  async function handleUpdateCategory(categoryId, categoryData) {
+    setCategoryErrorMessage('')
+
+    try {
+      const response = await fetch(
+        `http://localhost:8000/categories/${categoryId}`,
+        {
+          method: 'PATCH',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(categoryData)
+        }
+      )
+
+      if (!response.ok) {
+        throw new Error('Failed to update category')
+      }
+
+      const updatedCategory = await response.json()
+
+      setCategories(categories.map((category) => category.id===categoryId ? updatedCategory: category))
+
+      return true
+    } catch{
+      console.error('Failed to update category')
+      setCategoryErrorMessage('Failed to update category')
+
+      return false
+    }
+  }
+
+  async function handleDeleteCategory(categoryId) {
+    setCategoryErrorMessage('')
+
+    try {
+      const response = await fetch(
+        `http://localhost:8000/categories/${categoryId}`,
+        {
+          method: 'DELETE'
+        }
+      )
+
+      if (!response.ok) {
+        throw new Error('Failed to delete category')
+      }
+
+      setCategories((currentCategories) =>currentCategories.filter((category) => category.id !== categoryId))
+    } catch (error) {
+      console.error(error)
+      setCategoryErrorMessage('Failed to delete category')
+    }
+  }
+
   return (
     <main>
       <h1>Inventory Management System</h1>
@@ -313,7 +366,16 @@ function App() {
       {categoryErrorMessage && (<p>{categoryErrorMessage}</p>)}
 
       {categories.length > 0 ? (
-        <ul>{categories.map((category) => (<li key={category.id}>{category.name}</li>))}</ul>
+        <ul>
+          {categories.map((category) =>
+            <CategoryItem
+              key={category.id}
+              category={category}
+              onUpdateCatogory={handleUpdateCategory}
+              onDeleteCategory={handleDeleteCategory}
+            />
+          )}
+        </ul>
       ) : !categoryErrorMessage ? (
         <p>No categories found.</p>
       ) : null}
