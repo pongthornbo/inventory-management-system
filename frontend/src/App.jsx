@@ -13,6 +13,9 @@ function App() {
   const [newProductStock, setNewProductStock] = useState('0')
   const [actionErrorMessage, setActionErrorMessage] = useState('')
 
+  const [categories, setCategories] = useState([])
+  const [categoryErrorMessage, setCategoryErrorMessage] = useState('')
+
   useEffect(() => {
     async function loadProducts(){
       setIsLoading(true)
@@ -28,6 +31,7 @@ function App() {
 
         setProducts(data)
       } catch(error) {
+        console.error('Failed to load products')
         setErrorMessage(error.message)
       } finally {
         setIsLoading(false)
@@ -35,6 +39,29 @@ function App() {
     }
 
     loadProducts();
+  }, [refreshCount])
+
+  useEffect(() => {
+    async function loadCategories(){
+      setCategories([])
+      setCategoryErrorMessage('')
+      try{
+        const response = await fetch('http://localhost:8000/categories')
+
+        if (!response.ok) {
+          throw new Error('Failed to load categories')
+        }
+
+        const data = await response.json()
+
+        setCategories(data)
+      } catch(error) {
+        console.error('Failed to load categories')
+        setCategoryErrorMessage(error.message)
+      }
+    }
+
+    loadCategories();
   }, [refreshCount])
 
   function handleClearProduct() {
@@ -222,9 +249,17 @@ function App() {
           />
         </label>
 
-      <button type="submit">Add product</button>
-    </form>
+        <button type="submit">Add product</button>
+      </form>
 
+      <h2>Categories</h2>
+      {categoryErrorMessage ? (
+        <p>{categoryErrorMessage}</p>
+      ): categories.length > 0 ? (
+        <ul>{categories.map((category) => <li key={category.id}>{category.name}</li>)}</ul>
+      ):
+        <p>No categories found.</p>
+      }
     </main>
   )
 }
