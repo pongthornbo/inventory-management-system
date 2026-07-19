@@ -297,7 +297,7 @@ function App() {
         <ul>{categories.map((category) => (<li key={category.id}>{category.name}</li>))}</ul>
       ) : !categoryErrorMessage ? (
         <p>No categories found.</p>
-      ) : <p>{categoryErrorMessage}</p>}
+      ) : null}
 
       <h2>Add category</h2>
       <form onSubmit={handleCreateCategory}>
