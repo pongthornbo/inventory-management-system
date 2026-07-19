@@ -5,13 +5,14 @@ function ProductItem ({ product, categories, onUpdateStock, onUpdateProduct, onD
     const [editName, setEditName] = useState(product.name)
     const [editPrice, setEditPrice] = useState(String(product.price))
     const [editStock, setEditStock] = useState(String(product.stock))
-    const [editCategoryId, setCategoryId] = useState(product.category_id)
+    const [editCategoryId, setEditCategoryId] = useState(product.category_id)
 
     function handleStartEdit() {
         setEditName(product.name)
         setEditPrice(String(product.price))
         setEditStock(String(product.stock))
         setIsEditing(true)
+        setEditCategoryId(product.category_id === null ? '' : String(product.category_id),)
     }
 
     async function handleSubmit(event) {
@@ -22,6 +23,7 @@ function ProductItem ({ product, categories, onUpdateStock, onUpdateProduct, onD
                 name: editName,
                 price: Number(editPrice),
                 stock: Number(editStock),
+                category_id: Number(editCategoryId)
             })
 
         if (isSuccess) {
@@ -67,10 +69,10 @@ function ProductItem ({ product, categories, onUpdateStock, onUpdateProduct, onD
                     </label>
 
                     <label>
-                        CategoryID
+                        Category
                         <select
                             value={editCategoryId}
-                            onChange={(event) => {setCategoryId(event.target.value)}}
+                            onChange={(event) => {setEditCategoryId(event.target.value)}}
                         >
                             <option value="">
                                 No category
@@ -100,7 +102,7 @@ function ProductItem ({ product, categories, onUpdateStock, onUpdateProduct, onD
     return (
         <li>
             {product.name} — ฿{product.price} — Stock: {product.stock} 
-            - CategoryName: {categories.find(category => category.id === product.category_id)?.name ?? "No category"}
+            - Category: {categories.find(category => category.id === product.category_id)?.name ?? "No category"}
 
             <button
                 type="button"
