@@ -240,7 +240,7 @@ function App() {
 
       const updatedCategory = await response.json()
 
-      setCategories(categories.map((category) => category.id===categoryId ? updatedCategory: category))
+      setCategories((currentCategories) => currentCategories.map((category) => category.id===categoryId ? updatedCategory: category))
 
       return true
     } catch{
@@ -266,7 +266,10 @@ function App() {
         throw new Error('Failed to delete category')
       }
 
-      setCategories((currentCategories) =>currentCategories.filter((category) => category.id !== categoryId))
+      setCategories((currentCategories) => currentCategories.filter((category) => category.id !== categoryId))
+      if (newProductCategoryId === String(categoryId)) {
+        setNewProductCategoryId('')
+      }
     } catch (error) {
       console.error(error)
       setCategoryErrorMessage('Failed to delete category')
@@ -371,7 +374,7 @@ function App() {
             <CategoryItem
               key={category.id}
               category={category}
-              onUpdateCatogory={handleUpdateCategory}
+              onUpdateCatogery={handleUpdateCategory}
               onDeleteCategory={handleDeleteCategory}
             />
           )}

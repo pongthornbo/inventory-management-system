@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-function CategoryItem({category, onUpdateCatogory, onDeleteCategory}){
+function CategoryItem({category, onUpdateCategory, onDeleteCategory}){
     const [isEditing, setIsEditing] = useState(false)
     const [editName, setEditName] = useState(category.name)
     const [editDescription, setEditDescription] = useState(category.description ?? '')
@@ -14,7 +14,7 @@ function CategoryItem({category, onUpdateCatogory, onDeleteCategory}){
     async function handleSubmit(event) {
         event.preventDefault()
 
-        const isSuccess = onUpdateCatogory(
+        const isSuccess = await onUpdateCategory(
             category.id,
             {
                 name: editName,
@@ -30,7 +30,7 @@ function CategoryItem({category, onUpdateCatogory, onDeleteCategory}){
     if (isEditing) {
         return (
             <li>
-                <form>
+                <form onSubmit={handleSubmit}>
                     <label>
                         Name
                         <input
@@ -50,9 +50,9 @@ function CategoryItem({category, onUpdateCatogory, onDeleteCategory}){
                         />
                     </label>
 
-                    <button type="submit" onClick={handleSubmit}>Save</button>
+                    <button type="submit">Save</button>
 
-                    <button type="button" onClick={() => setIsEditing(false)}>Cancle</button>
+                    <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
                 </form>
             </li>
         )
