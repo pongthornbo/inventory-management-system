@@ -17,6 +17,7 @@ function App() {
 
   const [newCategoryName, setNewCategoryName] = useState('')
   const [newCategoryDescription, setNewCategoryDescription] = useState('')
+  const [newProductCategoryId, setNewProductCategoryId] = useState('')
 
   useEffect(() => {
     async function loadProducts(){
@@ -81,6 +82,10 @@ function App() {
       name: newProductName,
       price: Number(newProductPrice),
       stock: Number(newProductStock),
+      category_id: 
+        Number(newProductCategoryId) === '' ?
+        null :
+        Number(newProductCategoryId)
     }
 
     try { 
@@ -102,6 +107,7 @@ function App() {
       setNewProductName('')
       setNewProductPrice('')
       setNewProductStock('0')
+      setNewProductCategoryId('')
     } catch(error) {
       console.error(error)
       setProductErrorMessage('Failed to create product')
@@ -284,6 +290,20 @@ function App() {
             required
           />
         </label>
+
+        <label>
+          Category
+          <select
+              value={newProductCategoryId}
+              onChange={(event) => {setNewProductCategoryId(event.target.value)}}
+          >
+              <option value="">
+                  No category
+              </option>
+
+              {categories.map((category) => (<option key={category.id} value={category.id}>{category.name}</option>))}
+          </select>
+          </label>
 
         <button type="submit">Add product</button>
       </form>
