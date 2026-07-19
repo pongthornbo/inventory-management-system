@@ -6,12 +6,11 @@ function App() {
   const [searchText, setSearchText] = useState('')
   const [isLoading, setIsLoading] = useState(true)
   const [refreshCount, setRefreshCount] = useState(0)
-  const [errorMessage, setErrorMessage] = useState('')
+  const [productErrorMessage, setProductErrorMessage] = useState('')
 
   const [newProductName, setNewProductName] = useState('')
   const [newProductPrice, setNewProductPrice] = useState('')
   const [newProductStock, setNewProductStock] = useState('0')
-  const [actionErrorMessage, setActionErrorMessage] = useState('')
 
   const [categories, setCategories] = useState([])
   const [categoryErrorMessage, setCategoryErrorMessage] = useState('')
@@ -22,7 +21,8 @@ function App() {
   useEffect(() => {
     async function loadProducts(){
       setIsLoading(true)
-      setErrorMessage('')
+      setProducts([])
+      setProductErrorMessage('')
       try{
         const response = await fetch('http://localhost:8000/products')
 
@@ -35,7 +35,7 @@ function App() {
         setProducts(data)
       } catch(error) {
         console.error('Failed to load products')
-        setErrorMessage(error.message)
+        setProductErrorMessage(error.message)
       } finally {
         setIsLoading(false)
       }
@@ -75,7 +75,7 @@ function App() {
 
   async function handleCreateProduct(event) {
     event.preventDefault()
-    setActionErrorMessage('')
+    setProductErrorMessage('')
 
     const productData = {
       name: newProductName,
@@ -104,12 +104,12 @@ function App() {
       setNewProductStock('0')
     } catch(error) {
       console.error(error)
-      setActionErrorMessage('Failed to create product')
+      setProductErrorMessage('Failed to create product')
     }
   }
 
   async function handleDeleteProduct(productId) {
-    setActionErrorMessage('')
+    setProductErrorMessage('')
 
     try {
       const response = await fetch(`http://localhost:8000/products/${productId}`, {method: 'DELETE',})
@@ -121,12 +121,12 @@ function App() {
       setProducts((currentProducts) => currentProducts.filter((product) => product.id !== productId),)
     } catch(error) {
       console.error(error)
-      setActionErrorMessage('Failed to delete product')
+      setProductErrorMessage('Failed to delete product')
     }
   }
 
   async function handleUpdateStock(productId, newStock) {
-    setActionErrorMessage('')
+    setProductErrorMessage('')
 
     try {
       const response = await fetch(`http://localhost:8000/products/${productId}`, {
@@ -145,12 +145,12 @@ function App() {
       setProducts((currentProducts) => currentProducts.map((product) => product.id === productId ? updatedProduct: product))
     } catch (error) {
       console.error(error)
-      setActionErrorMessage('Failed to update stock')
+      setProductErrorMessage('Failed to update stock')
     }
   }
 
   async function handleUpdateProduct(productId, productData) {
-    setActionErrorMessage('')
+    setProductErrorMessage('')
 
     try {
       const response = await fetch(
@@ -173,7 +173,7 @@ function App() {
       return true
     } catch (error) {
       console.error(error)
-      setActionErrorMessage('Failed to update product')
+      setProductErrorMessage('Failed to update product')
 
       return false
     }
@@ -230,27 +230,25 @@ function App() {
       <button type="button" onClick={() => {setRefreshCount((currentCount) => currentCount+1)}}>Refresh</button>
       <button type="button" onClick={handleClearProduct}>Clear products</button>
 
+      {productErrorMessage && (<p>{productErrorMessage}</p>)}
+
       {isLoading ? (
         <p>Loading products...</p>
-      ) : errorMessage ? (
-        <p>{errorMessage}</p>
-      ) : filterProducts.length > 0 ? (
-          <ul>
-            {filterProducts.map((product) => (
-                <ProductItem
-                  key={product.id}
-                  product={product}
-                  onUpdateStock={handleUpdateStock}
-                  onUpdateProduct={handleUpdateProduct}
-                  onDelete={handleDeleteProduct}/>
-              ))
-            }
-          </ul>
-        ) : (
+      ) : (filterProducts.length>0) ? (
+            <ul>
+              {filterProducts.map((product) => (
+                  <ProductItem
+                    key={product.id}
+                    product={product}
+                    onUpdateStock={handleUpdateStock}
+                    onUpdateProduct={handleUpdateProduct}
+                    onDelete={handleDeleteProduct}
+                  />
+              ))}
+            </ul>
+          ) : (!productErrorMessage) ? (
           <p>No products found.</p>
-      )}
-
-      {actionErrorMessage && (<p>{actionErrorMessage}</p>)}
+          ) : null}
 
       <h2>Add product</h2>
       <form onSubmit={handleCreateProduct}>
