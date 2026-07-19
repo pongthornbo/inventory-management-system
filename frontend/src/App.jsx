@@ -16,6 +16,9 @@ function App() {
   const [categories, setCategories] = useState([])
   const [categoryErrorMessage, setCategoryErrorMessage] = useState('')
 
+  const [newCategoryName, setNewCategoryName] = useState('')
+  const [newCategoryDescription, setNewCategoryDescription] = useState('')
+
   useEffect(() => {
     async function loadProducts(){
       setIsLoading(true)
@@ -147,34 +150,69 @@ function App() {
   }
 
   async function handleUpdateProduct(productId, productData) {
-  setActionErrorMessage('')
+    setActionErrorMessage('')
 
-  try {
-    const response = await fetch(
-      `http://localhost:8000/products/${productId}`,
-      {
-        method: 'PATCH',
-        headers: {'Content-Type': 'application/json',},
-        body: JSON.stringify(productData),
+    try {
+      const response = await fetch(
+        `http://localhost:8000/products/${productId}`,
+        {
+          method: 'PATCH',
+          headers: {'Content-Type': 'application/json',},
+          body: JSON.stringify(productData),
+        }
+      )
+
+      if (!response.ok) {
+        throw new Error('Failed to update product')
       }
-    )
 
-    if (!response.ok) {
-      throw new Error('Failed to update product')
+      const updatedProduct = await response.json()
+
+      setProducts((currentProducts) => currentProducts.map((product) => product.id === productId ? updatedProduct : product))
+
+      return true
+    } catch (error) {
+      console.error(error)
+      setActionErrorMessage('Failed to update product')
+
+      return false
+    }
+  }
+
+  async function handleCreateCategory(event) {
+    event.preventDefault()
+    setCategoryErrorMessage('')
+
+    const categoryData = {
+      name: newCategoryName,
+      description: newCategoryDescription,
     }
 
-    const updatedProduct = await response.json()
+    try {
+      const response = await fetch(
+        'http://localhost:8000/categories',
+        {
+          method: 'POST',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify(categoryData)
+        }
+      )
 
-    setProducts((currentProducts) => currentProducts.map((product) => product.id === productId ? updatedProduct : product))
+      if (!response.ok) {
+        throw new Error('Failed to create category')
+      }
 
-    return true
-  } catch (error) {
-    console.error(error)
-    setActionErrorMessage('Failed to update product')
+      const createdCategory = await response.json()
 
-    return false
+      setCategories((currentCategories) => [...currentCategories, createdCategory,])
+
+      setNewCategoryName('')
+      setNewCategoryDescription('')
+    } catch (error) {
+      console.error(error)
+      setCategoryErrorMessage('Failed to create category')
+    }
   }
-}
 
   return (
     <main>
@@ -253,13 +291,36 @@ function App() {
       </form>
 
       <h2>Categories</h2>
-      {categoryErrorMessage ? (
-        <p>{categoryErrorMessage}</p>
-      ): categories.length > 0 ? (
-        <ul>{categories.map((category) => <li key={category.id}>{category.name}</li>)}</ul>
-      ):
+      {categoryErrorMessage && (<p>{categoryErrorMessage}</p>)}
+
+      {categories.length > 0 ? (
+        <ul>{categories.map((category) => (<li key={category.id}>{category.name}</li>))}</ul>
+      ) : !categoryErrorMessage ? (
         <p>No categories found.</p>
-      }
+      ) : <p>{categoryErrorMessage}</p>}
+
+      <h2>Add category</h2>
+      <form onSubmit={handleCreateCategory}>
+        <label>
+          Name
+          <input
+            type="text"
+            value={newCategoryName}
+            onChange={(event) => {setNewCategoryName(event.target.value)}}
+            required
+          />
+        </label>
+
+        <label>
+          Description
+          <input
+            type="text"
+            value={newCategoryDescription}
+            onChange={(event) => {setNewCategoryDescription(event.target.value)}}
+            />
+        </label>
+        <button type="submit">Add category</button>
+      </form>
     </main>
   )
 }
