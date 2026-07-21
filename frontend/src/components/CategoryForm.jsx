@@ -21,32 +21,37 @@ function CategoryForm({ onCreateCategory }) {
     }
 
     return (
-        <>
-            <h2>Add category</h2>
-            <form onSubmit={handleSubmit}>
-            <label>
-                Name
-                <input
-                type="text"
-                value={name}
-                onChange={(event) => setName(event.target.value)}
-                required
-                />
-            </label>
+        <section className="panel">
+            <h3>Add category</h3>
 
-            <label>
-                Description
-                <input
-                type="text"
-                value={description}
-                onChange={(event) => setDescription(event.target.value)}
-                />
-            </label>
+            <form className="form-grid" onSubmit={handleSubmit}>
+                <label className="form-field">
+                    Name
+                    <input
+                        type="text"
+                        value={name}
+                        onChange={(event) => setName(event.target.value)}
+                        required
+                    />
+                </label>
 
-            <button type="submit">Add category</button>
+                <label className="form-field">
+                    Description
+                    <input
+                        type="text"
+                        value={description}
+                        onChange={(event) => setDescription(event.target.value)}
+                    />
+                </label>
+
+                <div className="button-row form-actions">
+                    <button className="button button-primary" type="submit">
+                        Add category
+                    </button>
+                </div>
             </form>
-        </>
-  )
+        </section>
+    )
 }
 
 export default CategoryForm

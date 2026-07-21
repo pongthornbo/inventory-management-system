@@ -32,12 +32,12 @@ function ProductFilters({onApplyFilters}){
             lowStock: false,
         })
     }
-    return(
-        <>
-            <h2>Filter products</h2>
+    return (
+        <section className="panel">
+            <h3>Filter products</h3>
 
-            <form onSubmit={handleSubmit}>
-                <label>
+            <form className="form-grid form-grid-filters" onSubmit={handleSubmit}>
+                <label className="form-field">
                     Search
                     <input
                         type="text"
@@ -47,7 +47,7 @@ function ProductFilters({onApplyFilters}){
                     />
                 </label>
 
-                <label>
+                <label className="form-field">
                     Minimum price
                     <input
                         type="number"
@@ -58,7 +58,7 @@ function ProductFilters({onApplyFilters}){
                     />
                 </label>
 
-                <label>
+                <label className="form-field">
                     Maximum price
                     <input
                         type="number"
@@ -69,7 +69,7 @@ function ProductFilters({onApplyFilters}){
                     />
                 </label>
 
-                <label>
+                <label className="checkbox-field">
                     <input
                         type="checkbox"
                         checked={lowStock}
@@ -78,11 +78,21 @@ function ProductFilters({onApplyFilters}){
                     Low stock only
                 </label>
 
-                <button type="submit">Apply filters</button>
+                <div className="button-row form-actions">
+                    <button className="button button-primary" type="submit">
+                        Apply filters
+                    </button>
 
-                <button type="button" onClick={handleReset}>Reset filters</button>
+                    <button
+                        className="button button-secondary"
+                        type="button"
+                        onClick={handleReset}
+                    >
+                        Reset filters
+                    </button>
+                </div>
             </form>
-        </>
+        </section>
     )
 }
 

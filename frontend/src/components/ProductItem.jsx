@@ -33,67 +33,63 @@ function ProductItem ({ product, categories, onUpdateStock, onUpdateProduct, onD
 
     if (isEditing) {
         return (
-            <li>
-                <form onSubmit={handleSubmit}>
-                    <label>
+            <li className="item-card">
+                <form className="form-grid edit-form" onSubmit={handleSubmit}>
+                    <label className="form-field">
                         Name
                         <input
                             type="text"
                             value={editName}
-                            onChange={(event) => {setEditName(event.target.value)}}
+                            onChange={(event) => setEditName(event.target.value)}
                             required
                         />
                     </label>
 
-                    <label>
+                    <label className="form-field">
                         Price
                         <input
                             type="number"
                             value={editPrice}
-                            onChange={(event) => {setEditPrice(event.target.value)}}
+                            onChange={(event) => setEditPrice(event.target.value)}
                             min="0"
                             step="0.01"
                             required
                         />
                     </label>
 
-                    <label>
+                    <label className="form-field">
                         Stock
                         <input
                             type="number"
                             value={editStock}
-                            onChange={(event) => {setEditStock(event.target.value)}}
+                            onChange={(event) => setEditStock(event.target.value)}
                             min="0"
                             required
                         />
                     </label>
 
-                    <label>
+                    <label className="form-field">
                         Category
-                        <select
-                            value={editCategoryId}
-                            onChange={(event) => {setEditCategoryId(event.target.value)}}
-                        >
-                            <option value="">
-                                No category
-                            </option>
+                        <select value={editCategoryId} onChange={(event) => setEditCategoryId(event.target.value)}>
+                            <option value="">No category</option>
 
-                            {categories.map((category) => (<option key={category.id} value={category.id}>{category.name}</option>))}
+                            {categories.map((category) => (
+                                <option key={category.id} value={category.id}>{category.name}</option>
+                            ))}
                         </select>
                     </label>
 
-                    <button type="submit">
-                        Save
-                    </button>
+                    <div className="button-row form-actions">
+                        <button className="button button-primary" type="submit">Save</button>
 
-                    <button
-                        type="button"
-                        onClick={() => {
-                        setIsEditing(false)
-                        }}
-                    >
-                        Cancel
-                    </button>
+                        <button
+                            className="button button-secondary"
+                            type="button"
+                            onClick={() => {setIsEditing(false)}}
+                        >
+                            Cancel
+                        </button>
+                    </div>
                 </form>
             </li>
         )
@@ -104,31 +100,53 @@ function ProductItem ({ product, categories, onUpdateStock, onUpdateProduct, onD
         categories.find((category) => category.id === product.category_id,)?.name ?? 'Category unavailable'
 
     return (
-        <li>
-            {product.name} — ฿{product.price} — Stock: {product.stock} - Category: {categoryName}
+        <li className="item-card">
+            <div className="item-main">
+                <h3 className="item-title">{product.name}</h3>
+
+                <div className="item-meta">
+                    <span className="meta-pill">฿{product.price}</span>
+                    <span className="meta-pill">Stock: {product.stock}</span>
+                    <span className="meta-pill">Category: {categoryName}</span>
+                </div>
+            </div>
+
+            <div className="item-actions">
+            <div className="stock-controls">
+                <button
+                    className="button button-secondary button-icon"
+                    type="button"
+                    onClick={() => {onUpdateStock(product.id, product.stock - 1)}}
+                    disabled={product.stock === 0}
+                >
+                    −
+                </button>
+
+                <button
+                    className="button button-secondary button-icon"
+                    type="button"
+                    onClick={() => {onUpdateStock(product.id, product.stock + 1)}}
+                >
+                    +
+                </button>
+            </div>
 
             <button
-                type="button"
-                onClick={() => {onUpdateStock(product.id, product.stock - 1)}}
-                disabled={product.stock === 0}
-            >
-                -
-            </button>
-            <button
-                type="button"
-                onClick={() => {onUpdateStock(product.id, product.stock + 1)}}
-            >
-                +
-            </button>
-
-            <button
+                className="button button-secondary"
                 type="button"
                 onClick={handleStartEdit}
             >
                 Edit
             </button>
 
-            <button type="button" onClick={() => onDelete(product.id)}>Delete</button>
+            <button
+                className="button button-danger"
+                type="button"
+                onClick={() => onDelete(product.id)}
+            >
+                Delete
+            </button>
+            </div>
         </li>
     )
 }

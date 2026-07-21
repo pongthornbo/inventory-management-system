@@ -29,9 +29,9 @@ function CategoryItem({category, onUpdateCategory, onDeleteCategory}){
 
     if (isEditing) {
         return (
-            <li>
-                <form onSubmit={handleSubmit}>
-                    <label>
+            <li className="item-card">
+                <form className="form-grid edit-form" onSubmit={handleSubmit}>
+                    <label className="form-field">
                         Name
                         <input
                             type="text"
@@ -41,7 +41,7 @@ function CategoryItem({category, onUpdateCategory, onDeleteCategory}){
                         />
                     </label>
 
-                    <label>
+                    <label className="form-field">
                         Description
                         <input
                             type="text"
@@ -50,19 +50,47 @@ function CategoryItem({category, onUpdateCategory, onDeleteCategory}){
                         />
                     </label>
 
-                    <button type="submit">Save</button>
+                    <div className="button-row form-actions">
+                        <button className="button button-primary" type="submit">Save</button>
 
-                    <button type="button" onClick={() => setIsEditing(false)}>Cancel</button>
+                        <button
+                            className="button button-secondary"
+                            type="button"
+                            onClick={() => setIsEditing(false)}
+                        >
+                            Cancel
+                        </button>
+                    </div>
                 </form>
             </li>
         )
     }
 
     return (
-        <li>
-            {category.name} - Description: {category.description ?? "No description"}
-            <button type="button" onClick={handleStartEdit}>Edit</button>
-            <button type="button" onClick={() => onDeleteCategory(category.id)}>Delete</button>
+        <li className="item-card">
+            <div className="item-main">
+                <h3 className="item-title">{category.name}</h3>
+
+                <p className="item-description">{category.description ?? 'No description'}</p>
+            </div>
+
+            <div className="item-actions">
+                <button
+                    className="button button-secondary"
+                    type="button"
+                    onClick={handleStartEdit}
+                >
+                    Edit
+                </button>
+
+                <button
+                    className="button button-danger"
+                    type="button"
+                    onClick={() => onDeleteCategory(category.id)}
+                >
+                    Delete
+                </button>
+            </div>
         </li>
     )
 }

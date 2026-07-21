@@ -32,11 +32,11 @@ function ProductForm({categories, onCreateProduct}) {
     }
 
     return (
-        <>
-            <h2>Add product</h2>
+        <section className="panel">
+            <h3>Add product</h3>
 
-            <form onSubmit={handleSubmit}>
-                <label>
+            <form className="form-grid" onSubmit={handleSubmit}>
+                <label className="form-field">
                     Name
                     <input
                         type="text"
@@ -46,8 +46,8 @@ function ProductForm({categories, onCreateProduct}) {
                     />
                 </label>
 
-                <label>
-                Price
+                <label className="form-field">
+                    Price
                     <input
                         type="number"
                         value={price}
@@ -58,8 +58,8 @@ function ProductForm({categories, onCreateProduct}) {
                     />
                 </label>
 
-                <label>
-                Stock
+                <label className="form-field">
+                    Stock
                     <input
                         type="number"
                         value={stock}
@@ -69,18 +69,27 @@ function ProductForm({categories, onCreateProduct}) {
                     />
                 </label>
 
-                <label>
+                <label className="form-field">
                     Category
-                    <select value={validCategoryId} onChange={(event) => setCategoryId(event.target.value)}>
+                    <select
+                        value={validCategoryId}
+                        onChange={(event) => setCategoryId(event.target.value)}
+                        >
+                        <option value="">No category</option>
 
-                    <option value="">No category</option>
-                    {categories.map((category) => (<option key={category.id} value={category.id}>{category.name}</option>))}
-                </select>
+                        {categories.map((category) => (
+                            <option key={category.id} value={category.id}>{category.name}</option>
+                        ))}
+                    </select>
                 </label>
 
-                <button type="submit">Add product</button>
+                <div className="button-row form-actions">
+                    <button className="button button-primary" type="submit">
+                        Add product
+                    </button>
+                </div>
             </form>
-        </>
+        </section>
     )
 }
 

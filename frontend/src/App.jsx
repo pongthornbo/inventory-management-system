@@ -269,58 +269,96 @@ function App() {
   }
 
   return (
-    <main>
-      <h1>Inventory Management System</h1>
-      <p>Manage products and stock.</p>
+    <main className="dashboard">
+      <header className="dashboard-header">
+        <p className="eyebrow">Inventory dashboard</p>
+        <h1>Inventory Management System</h1>
+        <p className="dashboard-subtitle">
+          Manage products, stock, and categories.
+        </p>
+      </header>
 
-      <h2>Products</h2>
-      <ProductFilters onApplyFilters={handleApplyFilters}/>
+      <div className="dashboard-grid">
+        <section className="dashboard-section">
+          <div className="section-header">
+            <div>
+              <p className="eyebrow">Inventory</p>
+              <h2>Products</h2>
+            </div>
 
-      <button type="button" onClick={() => {setRefreshCount((currentCount) => currentCount+1)}}>Refresh</button>
-      <button type="button" onClick={handleClearProduct}>Clear products</button>
+            <div className="button-row">
+              <button
+                className="button button-secondary"
+                type="button"
+                onClick={() => {setRefreshCount((currentCount) => currentCount + 1)}}
+              >
+                Refresh
+              </button>
 
-      {productErrorMessage && (<p>{productErrorMessage}</p>)}
+              <button
+                className="button button-secondary"
+                type="button"
+                onClick={handleClearProduct}
+              >
+                Clear products
+              </button>
+            </div>
+          </div>
 
-      {isLoading ? (
-        <p>Loading products...</p>
-      ) : (products.length>0) ? (
-            <ul>
+          <ProductFilters onApplyFilters={handleApplyFilters} />
+
+          {productErrorMessage && (<p className="status-message status-message-error">{productErrorMessage}</p>)}
+
+          {isLoading ? (
+            <p className="status-message">Loading products...</p>
+          ) : products.length > 0 ? (
+            <ul className="item-list">
               {products.map((product) => (
-                  <ProductItem
-                    key={product.id}
-                    product={product}
-                    categories={categories}
-                    onUpdateStock={handleUpdateStock}
-                    onUpdateProduct={handleUpdateProduct}
-                    onDelete={handleDeleteProduct}
-                  />
+                <ProductItem
+                  key={product.id}
+                  product={product}
+                  categories={categories}
+                  onUpdateStock={handleUpdateStock}
+                  onUpdateProduct={handleUpdateProduct}
+                  onDelete={handleDeleteProduct}
+                />
               ))}
             </ul>
-          ) : (!productErrorMessage) ? (
-          <p>No products found.</p>
+          ) : !productErrorMessage ? (
+            <p className="empty-state">No products found.</p>
           ) : null}
 
-      <ProductForm categories={categories} onCreateProduct={handleCreateProduct}/>
+          <ProductForm categories={categories} onCreateProduct={handleCreateProduct}/>
+        </section>
 
-      <h2>Categories</h2>
-      {categoryErrorMessage && (<p>{categoryErrorMessage}</p>)}
+        <section className="dashboard-section">
+          <div className="section-header">
+            <div>
+              <p className="eyebrow">Organization</p>
+              <h2>Categories</h2>
+            </div>
+          </div>
 
-      {categories.length > 0 ? (
-        <ul>
-          {categories.map((category) =>
-            <CategoryItem
-              key={category.id}
-              category={category}
-              onUpdateCategory={handleUpdateCategory}
-              onDeleteCategory={handleDeleteCategory}
-            />
-          )}
-        </ul>
-      ) : !categoryErrorMessage ? (
-        <p>No categories found.</p>
-      ) : null}
+          {categoryErrorMessage && (<p className="status-message status-message-error">{categoryErrorMessage}</p>)}
 
-      <CategoryForm onCreateCategory={handleCreateCategory}/>
+          {categories.length > 0 ? (
+            <ul className="item-list">
+              {categories.map((category) => (
+                <CategoryItem
+                  key={category.id}
+                  category={category}
+                  onUpdateCategory={handleUpdateCategory}
+                  onDeleteCategory={handleDeleteCategory}
+                />
+              ))}
+            </ul>
+          ) : !categoryErrorMessage ? (
+            <p className="empty-state">No categories found.</p>
+          ) : null}
+
+          <CategoryForm onCreateCategory={handleCreateCategory} />
+        </section>
+      </div>
     </main>
   )
 }
