@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState } from "react"
 
 function ProductForm({categories, onCreateProduct}) {
     const [name, setName] = useState('')
@@ -6,14 +6,7 @@ function ProductForm({categories, onCreateProduct}) {
     const [stock, setStock] = useState(0)
     const [categoryId, setCategoryId] = useState('')
 
-    useEffect(() => {
-        const categoryStillExists = categories.some((category) => String(category.id) === categoryId)
-
-        if (categoryId !== '' && !categoryStillExists)
-            setCategoryId('')
-    }
-
-    , [categories, categoryId])
+    const validCategoryId = (categories.some((category) => String(category.id) === categoryId)) ? categoryId : ''
 
     async function handleSubmit(event){
         event.preventDefault()
@@ -23,9 +16,9 @@ function ProductForm({categories, onCreateProduct}) {
             price: Number(price),
             stock: Number(stock),
             category_id:
-                categoryId === '' ?
+                validCategoryId === '' ?
                 null :
-                Number(categoryId)
+                Number(validCategoryId)
         }
 
         const isSuccess = await onCreateProduct(productData)
@@ -78,7 +71,7 @@ function ProductForm({categories, onCreateProduct}) {
 
                 <label>
                     Category
-                    <select value={categoryId} onChange={(event) => setCategoryId(event.target.value)}>
+                    <select value={validCategoryId} onChange={(event) => setCategoryId(event.target.value)}>
 
                     <option value="">No category</option>
                     {categories.map((category) => (<option key={category.id} value={category.id}>{category.name}</option>))}
