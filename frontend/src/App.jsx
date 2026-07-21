@@ -1,6 +1,8 @@
 import { useState, useEffect } from 'react'
 import ProductItem from './components/ProductItem.jsx'
 import CategoryItem from './components/CategoryItem.jsx'
+import CategoryForm from './components/CategoryForm.jsx'
+import ProductForm from './components/ProductForm.jsx'
 
 function App() {
   const [products, setProducts] = useState([])
@@ -9,16 +11,8 @@ function App() {
   const [refreshCount, setRefreshCount] = useState(0)
   const [productErrorMessage, setProductErrorMessage] = useState('')
 
-  const [newProductName, setNewProductName] = useState('')
-  const [newProductPrice, setNewProductPrice] = useState('')
-  const [newProductStock, setNewProductStock] = useState('0')
-
   const [categories, setCategories] = useState([])
   const [categoryErrorMessage, setCategoryErrorMessage] = useState('')
-
-  const [newCategoryName, setNewCategoryName] = useState('')
-  const [newCategoryDescription, setNewCategoryDescription] = useState('')
-  const [newProductCategoryId, setNewProductCategoryId] = useState('')
 
   useEffect(() => {
     async function loadProducts(){
@@ -75,19 +69,8 @@ function App() {
 
   const filterProducts = products.filter((product) => product.name.toLowerCase().includes(searchText.toLowerCase()))
 
-  async function handleCreateProduct(event) {
-    event.preventDefault()
+  async function handleCreateProduct(productData) {
     setProductErrorMessage('')
-
-    const productData = {
-      name: newProductName,
-      price: Number(newProductPrice),
-      stock: Number(newProductStock),
-      category_id: 
-        newProductCategoryId === '' ?
-        null :
-        Number(newProductCategoryId)
-    }
 
     try { 
       const response = await fetch('http://localhost:8000/products', {
@@ -105,13 +88,12 @@ function App() {
 
       setProducts((currentProducts) => [...currentProducts, createdProduct])
 
-      setNewProductName('')
-      setNewProductPrice('')
-      setNewProductStock('0')
-      setNewProductCategoryId('')
+      return true
     } catch(error) {
       console.error(error)
       setProductErrorMessage('Failed to create product')
+
+      return false
     }
   }
 
@@ -186,14 +168,8 @@ function App() {
     }
   }
 
-  async function handleCreateCategory(event) {
-    event.preventDefault()
+  async function handleCreateCategory(categoryData) {
     setCategoryErrorMessage('')
-
-    const categoryData = {
-      name: newCategoryName,
-      description: newCategoryDescription,
-    }
 
     try {
       const response = await fetch(
@@ -213,11 +189,12 @@ function App() {
 
       setCategories((currentCategories) => [...currentCategories, createdCategory,])
 
-      setNewCategoryName('')
-      setNewCategoryDescription('')
+      return true
     } catch (error) {
       console.error(error)
       setCategoryErrorMessage('Failed to create category')
+
+      return false
     }
   }
 
@@ -267,9 +244,6 @@ function App() {
       }
 
       setCategories((currentCategories) => currentCategories.filter((category) => category.id !== categoryId))
-      if (newProductCategoryId === String(categoryId)) {
-        setNewProductCategoryId('')
-      }
     } catch (error) {
       console.error(error)
       setCategoryErrorMessage('Failed to delete category')
@@ -313,57 +287,7 @@ function App() {
           <p>No products found.</p>
           ) : null}
 
-      <h2>Add product</h2>
-      <form onSubmit={handleCreateProduct}>
-        <label>
-          Name
-          <input
-            type="text"
-            value={newProductName}
-            onChange={(event) => {setNewProductName(event.target.value)}}
-            required
-          />
-        </label>
-
-        <label>
-          Price
-          <input
-            type="number"
-            value={newProductPrice}
-            onChange={(event) => {setNewProductPrice(event.target.value)}}
-            min="0"
-            step="0.01"
-            required
-          />
-        </label>
-
-        <label>
-          Stock
-          <input
-            type="number"
-            value={newProductStock}
-            onChange={(event) => {setNewProductStock(event.target.value)}}
-            min="0"
-            required
-          />
-        </label>
-
-        <label>
-          Category
-          <select
-              value={newProductCategoryId}
-              onChange={(event) => {setNewProductCategoryId(event.target.value)}}
-          >
-              <option value="">
-                  No category
-              </option>
-
-              {categories.map((category) => (<option key={category.id} value={category.id}>{category.name}</option>))}
-          </select>
-          </label>
-
-        <button type="submit">Add product</button>
-      </form>
+      <ProductForm categories={categories} onCreateProduct={handleCreateProduct}/>
 
       <h2>Categories</h2>
       {categoryErrorMessage && (<p>{categoryErrorMessage}</p>)}
@@ -383,28 +307,7 @@ function App() {
         <p>No categories found.</p>
       ) : null}
 
-      <h2>Add category</h2>
-      <form onSubmit={handleCreateCategory}>
-        <label>
-          Name
-          <input
-            type="text"
-            value={newCategoryName}
-            onChange={(event) => {setNewCategoryName(event.target.value)}}
-            required
-          />
-        </label>
-
-        <label>
-          Description
-          <input
-            type="text"
-            value={newCategoryDescription}
-            onChange={(event) => {setNewCategoryDescription(event.target.value)}}
-            />
-        </label>
-        <button type="submit">Add category</button>
-      </form>
+      <CategoryForm onCreateCategory={handleCreateCategory}/>
     </main>
   )
 }
