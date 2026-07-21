@@ -3,10 +3,16 @@ import ProductItem from './components/ProductItem.jsx'
 import CategoryItem from './components/CategoryItem.jsx'
 import CategoryForm from './components/CategoryForm.jsx'
 import ProductForm from './components/ProductForm.jsx'
+import ProductFilters from './components/ProductFilters.jsx'
 
 function App() {
   const [products, setProducts] = useState([])
-  const [searchText, setSearchText] = useState('')
+  const [appliedFilters, setAppliedFilters] = useState({
+    search: '',
+    minPrice: '',
+    maxPrice: '',
+    lowStock: false,
+  })
   const [isLoading, setIsLoading] = useState(true)
   const [refreshCount, setRefreshCount] = useState(0)
   const [productErrorMessage, setProductErrorMessage] = useState('')
@@ -20,7 +26,23 @@ function App() {
       setProducts([])
       setProductErrorMessage('')
       try{
-        const response = await fetch('http://localhost:8000/products')
+        const params = new URLSearchParams()
+
+        if (appliedFilters.search) {params.set('search', appliedFilters.search)}
+
+        if (appliedFilters.minPrice) {params.set('min_price', appliedFilters.minPrice)}
+
+        if (appliedFilters.maxPrice) {params.set('max_price', appliedFilters.maxPrice)}
+
+        if (appliedFilters.lowStock) {params.set('low_stock', 'true')}
+
+        const queryString = params.toString()
+
+        const url = queryString
+          ? `http://localhost:8000/products?${queryString}`
+          : 'http://localhost:8000/products'
+
+        const response = await fetch(url)
 
         if (!response.ok) {
           throw new Error('Failed to load products')
@@ -38,7 +60,7 @@ function App() {
     }
 
     loadProducts();
-  }, [refreshCount])
+  }, [refreshCount, appliedFilters])
 
   useEffect(() => {
     async function loadCategories(){
@@ -67,7 +89,9 @@ function App() {
     setProducts([])
   }
 
-  const filterProducts = products.filter((product) => product.name.toLowerCase().includes(searchText.toLowerCase()))
+  function handleApplyFilters(filterData) {
+    setAppliedFilters(filterData)
+  }
 
   async function handleCreateProduct(productData) {
     setProductErrorMessage('')
@@ -84,9 +108,7 @@ function App() {
         throw new Error('Failed to create product')
       }
 
-      const createdProduct = await response.json()
-
-      setProducts((currentProducts) => [...currentProducts, createdProduct])
+      setRefreshCount((currentCount) => currentCount + 1)
 
       return true
     } catch(error) {
@@ -107,7 +129,7 @@ function App() {
         throw new Error('Failed to delete product')
       }
 
-      setProducts((currentProducts) => currentProducts.filter((product) => product.id !== productId),)
+      setRefreshCount((currentCount) => currentCount + 1)
     } catch(error) {
       console.error(error)
       setProductErrorMessage('Failed to delete product')
@@ -129,9 +151,7 @@ function App() {
         throw new Error('Failed to update stock')
       }
 
-      const updatedProduct = await response.json()
-
-      setProducts((currentProducts) => currentProducts.map((product) => product.id === productId ? updatedProduct: product))
+      setRefreshCount((currentCount) => currentCount + 1)
     } catch (error) {
       console.error(error)
       setProductErrorMessage('Failed to update stock')
@@ -155,9 +175,7 @@ function App() {
         throw new Error('Failed to update product')
       }
 
-      const updatedProduct = await response.json()
-
-      setProducts((currentProducts) => currentProducts.map((product) => product.id === productId ? updatedProduct : product))
+      setRefreshCount((currentCount) => currentCount + 1)
 
       return true
     } catch (error) {
@@ -256,12 +274,7 @@ function App() {
       <p>Manage products and stock.</p>
 
       <h2>Products</h2>
-      <input
-        type="text"
-        value={searchText}
-        onChange={(event) => {setSearchText(event.target.value)}}
-        placeholder="Search products"
-      />
+      <ProductFilters onApplyFilters={handleApplyFilters}/>
 
       <button type="button" onClick={() => {setRefreshCount((currentCount) => currentCount+1)}}>Refresh</button>
       <button type="button" onClick={handleClearProduct}>Clear products</button>
@@ -270,9 +283,9 @@ function App() {
 
       {isLoading ? (
         <p>Loading products...</p>
-      ) : (filterProducts.length>0) ? (
+      ) : (products.length>0) ? (
             <ul>
-              {filterProducts.map((product) => (
+              {products.map((product) => (
                   <ProductItem
                     key={product.id}
                     product={product}
