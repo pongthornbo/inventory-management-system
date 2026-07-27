@@ -1,6 +1,5 @@
 name: inventory-management-system
 
-
 services:
   api:
     build: ./backend
@@ -12,7 +11,7 @@ services:
     volumes:
       - ./backend:/app
     env_file:
-      - .env
+      - ./backend/.env
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
   postgres:
     image: postgres:17

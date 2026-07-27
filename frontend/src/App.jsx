@@ -5,6 +5,8 @@ import CategoryForm from './components/CategoryForm.jsx'
 import ProductForm from './components/ProductForm.jsx'
 import ProductFilters from './components/ProductFilters.jsx'
 
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL
+
 function App() {
   const [products, setProducts] = useState([])
   const [appliedFilters, setAppliedFilters] = useState({
@@ -38,9 +40,7 @@ function App() {
 
         const queryString = params.toString()
 
-        const url = queryString
-          ? `http://localhost:8000/products?${queryString}`
-          : 'http://localhost:8000/products'
+        const url = `${API_BASE_URL}/products${queryString && `?${queryString}`}`
 
         const response = await fetch(url)
 
@@ -67,7 +67,7 @@ function App() {
       setCategories([])
       setCategoryErrorMessage('')
       try{
-        const response = await fetch('http://localhost:8000/categories')
+        const response = await fetch(`${API_BASE_URL}/categories`)
 
         if (!response.ok) {
           throw new Error('Failed to load categories')
@@ -97,7 +97,7 @@ function App() {
     setProductErrorMessage('')
 
     try { 
-      const response = await fetch('http://localhost:8000/products', {
+      const response = await fetch(`${API_BASE_URL}/products`, {
           method: 'POST',
           headers: {'Content-Type': 'application/json',},
           body: JSON.stringify(productData),
@@ -123,7 +123,7 @@ function App() {
     setProductErrorMessage('')
 
     try {
-      const response = await fetch(`http://localhost:8000/products/${productId}`, {method: 'DELETE',})
+      const response = await fetch(`${API_BASE_URL}/products/${productId}`, {method: 'DELETE',})
 
       if (!response.ok) {
         throw new Error('Failed to delete product')
@@ -140,7 +140,7 @@ function App() {
     setProductErrorMessage('')
 
     try {
-      const response = await fetch(`http://localhost:8000/products/${productId}`, {
+      const response = await fetch(`${API_BASE_URL}/products/${productId}`, {
           method: 'PATCH',
           headers: {'Content-Type': 'application/json',},
           body: JSON.stringify({stock: newStock,}),
@@ -163,7 +163,7 @@ function App() {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/products/${productId}`,
+        `${API_BASE_URL}/products/${productId}`,
         {
           method: 'PATCH',
           headers: {'Content-Type': 'application/json',},
@@ -191,7 +191,7 @@ function App() {
 
     try {
       const response = await fetch(
-        'http://localhost:8000/categories',
+        `${API_BASE_URL}/categories`,
         {
           method: 'POST',
           headers: {'Content-Type': 'application/json'},
@@ -221,7 +221,7 @@ function App() {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/categories/${categoryId}`,
+        `${API_BASE_URL}/categories/${categoryId}`,
         {
           method: 'PATCH',
           headers: {'Content-Type': 'application/json'},
@@ -251,7 +251,7 @@ function App() {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/categories/${categoryId}`,
+        `${API_BASE_URL}/categories/${categoryId}`,
         {
           method: 'DELETE'
         }

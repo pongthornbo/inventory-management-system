@@ -1,3 +1,5 @@
+import os
+
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -8,7 +10,12 @@ from app.routers import products, categories
 
 app = FastAPI()
 
-allowed_origins = ["http://localhost:5173"]
+allowed_origins_env = os.getenv("ALLOWED_ORIGINS")
+
+if allowed_origins_env is None :
+    raise RuntimeError("ALLOWED_ORIGINS environment variable is not set")
+
+allowed_origins = [origin.strip() for origin in allowed_origins_env.split(",") if origin.strip()]
 
 app.add_middleware(
     CORSMiddleware, 
