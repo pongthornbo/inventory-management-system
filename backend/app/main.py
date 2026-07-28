@@ -30,4 +30,4 @@ app.include_router(categories.router)
 
 @app.get("/")
 def root():
-    return {"message": "Inventory API is running"}
+    return {"message": "Inventory API is running via CI/CD"}
