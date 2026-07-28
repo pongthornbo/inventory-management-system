@@ -38,6 +38,8 @@ This project is part of my software development learning portfolio. It demonstra
 - Git
 - GitHub
 - Google Cloud Run
+- Google Cloud Build
+- Google Artifact Registry
 - Neon PostgreSQL
 - Vercel
 
@@ -81,6 +83,8 @@ The application is deployed using the following services:
 
 - The React frontend is hosted on Vercel.
 - The FastAPI backend runs as a containerized service on Google Cloud Run.
+- Docker images are stored in Google Artifact Registry.
+- Backend builds and deployments are automated using Google Cloud Build.
 - The production PostgreSQL database is hosted on Neon.
 
 Production request flow:
@@ -91,6 +95,18 @@ Browser
 → FastAPI REST API on Google Cloud Run
 → PostgreSQL database on Neon
 ```
+
+Backend deployment flow:
+
+```text
+Push backend changes to the main branch
+→ Cloud Build Trigger starts the pipeline
+→ Cloud Build builds the backend Docker image
+→ The image is pushed to Artifact Registry
+→ Cloud Run deploys a new inventory-api revision
+```
+
+The trigger monitors backend/** and cloudbuild.yaml, so frontend-only changes do not redeploy the backend.
 
 ## API Endpoints
 
@@ -156,6 +172,7 @@ Browser
 │   ├── eslint.config.js
 │   ├── package.json
 │   └── vite.config.js
+├── cloudbuild.yaml
 ├── docker-compose.yml
 ├── .env.example
 ├── .gitignore
