@@ -6,6 +6,11 @@ The backend is built with FastAPI, SQLAlchemy, Alembic, and PostgreSQL. The fron
 
 This project is part of my software development learning portfolio. It demonstrates full-stack application structure, REST API design, database integration, frontend-backend communication, CRUD operations, server-side filtering, responsive layout, and project organization.
 
+## Live Demo
+
+- Frontend: https://inventory-management-system-sigma-bay.vercel.app
+- API Documentation: https://inventory-api-906039962414.asia-southeast1.run.app/docs
+
 ## Tech Stack
 
 ### Backend
@@ -32,6 +37,9 @@ This project is part of my software development learning portfolio. It demonstra
 - Docker Compose
 - Git
 - GitHub
+- Google Cloud Run
+- Neon PostgreSQL
+- Vercel
 
 ## Features
 
@@ -66,6 +74,23 @@ This project is part of my software development learning portfolio. It demonstra
 - Frontend-backend communication using the Fetch API
 - Loading, empty, and error states
 - Responsive dashboard layout for different screen sizes
+
+## Production Deployment
+
+The application is deployed using the following services:
+
+- The React frontend is hosted on Vercel.
+- The FastAPI backend runs as a containerized service on Google Cloud Run.
+- The production PostgreSQL database is hosted on Neon.
+
+Production request flow:
+
+```text
+Browser
+→ React frontend on Vercel
+→ FastAPI REST API on Google Cloud Run
+→ PostgreSQL database on Neon
+```
 
 ## API Endpoints
 
@@ -287,6 +312,6 @@ docker compose exec api alembic history
 
 ## Project Status
 
-This project is currently under development as a full-stack software development learning portfolio project.
+The core version of the project is complete and deployed.
 
-The current version includes a responsive React dashboard connected to a FastAPI REST API, with product management, category management, server-side product search and filters, PostgreSQL persistence, and Alembic database migrations.
+The production application includes a responsive React dashboard connected to a FastAPI REST API, with product and category management, server-side product search and filters, PostgreSQL persistence, Alembic database migrations, and a containerized backend deployment.
