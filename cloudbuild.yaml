@@ -28,3 +28,6 @@ steps:
 
 images:
   - "asia-southeast1-docker.pkg.dev/$PROJECT_ID/inventory-images/inventory-api:$COMMIT_SHA"
+
+options:
+  logging: CLOUD_LOGGING_ONLY
